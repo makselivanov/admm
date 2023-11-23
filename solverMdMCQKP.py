@@ -29,10 +29,14 @@ def validatorMdMCQ(profits: np.ndarray,
     if weights.shape != (M, N):
         raise ValueError("weights is not (M, N) matrix")
 
-    isSymMatrix = lambda matrix: np.allclose(matrix, matrix.T, rtol=rtol, atol=atol)
+    def isSymMatrix(matrix):
+        return np.allclose(matrix, matrix.T, rtol=rtol, atol=atol)
+
+    def isBinaryMatrix(matrix):
+        return np.array_equal(matrix, matrix.astype(bool))
+
     if not isSymMatrix(profits):
         raise ValueError("profits is not symmetric matrix")
-    isBinaryMatrix = lambda matrix: np.array_equal(matrix, matrix.astype(bool))
     if not isBinaryMatrix(groups):
         raise ValueError("groups is not binary matrix")
     return N, M, K
@@ -115,9 +119,31 @@ def solverMdMCQKP_3ADMM(profits: np.ndarray,
         # update lambda
         lamb[curr_epoch] = lamb[prev_epoch] + rho * (x[curr_epoch] + A_1 * zu[curr_epoch] - y[curr_epoch])
         # calculate metrics
-        metrics[curr_epoch] = - x[curr_epoch].T * profit * x[curr_epoch] + mu * loss(x[curr_epoch], zu[curr_epoch])
+        metrics[curr_epoch] = - x[curr_epoch].T * profits * x[curr_epoch] + mu * loss(x[curr_epoch], zu[curr_epoch])
     pass
 
 
 if __name__ == '__main__':
-    solverMdMCQKP_3ADMM()
+    # Make default knapsack problem for testing
+    N, M, K = 3, 1, 0
+    profits = np.array([[3, 0, 0],
+                        [0, 1, 0],
+                        [0, 0, 5]])
+    groups = np.ndarray((K, N))
+    weights = np.array([[5, 1, 8]])
+    capacity = np.array([8])
+    generator = np.random.default_rng(1234)
+    settings = {
+        "x_0": generator.random(N),
+        "zu_0": generator.random(N + M),
+        "y_0": generator.random(M),
+        "lambda_0": generator.random(M),
+        "epochs": 20,
+        "rho": 1e3,
+        "alpha": 1e3,
+        "beta": 1e3,
+        "gamma": 1e3,
+        "mu": 1e3,
+        "eps": 1e-6,
+    }
+    solverMdMCQKP_3ADMM(profits, groups, weights, capacity, **settings)
