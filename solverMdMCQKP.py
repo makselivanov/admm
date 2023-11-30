@@ -105,17 +105,17 @@ def solverMdMCQKP_3ADMM(profits: np.ndarray,
     qubo_sampler = SimulatedAnnealingSampler()
     # TODO validate constant and initial values
     epochs += 1
-    x = np.full(epochs, x_0)
-    zu = np.full(epochs, zu_0)
-    y = np.full(epochs, y_0)
+    x = np.tile(x_0, (epochs, 1))
+    zu = np.tile(zu_0, (epochs, 1))
+    y = np.tile(y_0, (epochs, 1))
     lamb = np.full(epochs, lambda_0)
     metrics = np.zeros(epochs)
     # TODO calculate metrics for zero
     for curr_epoch in range(1, epochs):
         prev_epoch = curr_epoch - 1
         # Qubo block
-        Q = - profits + alpha / 2 * groups.T * groups + rho / 2 * np.eye(N)
-        diag = - (alpha * groups.T * np.ones(K) + rho * (A_1 * zu[prev_epoch] + y[prev_epoch]) - lamb[prev_epoch])
+        Q = - profits + alpha / 2 * groups.T.dot(groups) + rho / 2 * np.eye(N)
+        diag = - (alpha * groups.T.dot(np.ones(K)) + rho * (A_1.dot(zu[prev_epoch]) + y[prev_epoch]) - lamb[prev_epoch])
         for i in range(N):
             Q[i, i] += diag[i]
         qubo_sampler.sample_qubo(Q)
@@ -131,11 +131,11 @@ def solverMdMCQKP_3ADMM(profits: np.ndarray,
             raise "Solution not found for convex block"
         zu[curr_epoch] = np.hstack([solution.x, solution.z])
         # Convex + quadratic block
-        y[curr_epoch] = (lamb[prev_epoch] + rho * (x[curr_epoch] + A_1 * zu[curr_epoch])) / (gamma + rho)
+        y[curr_epoch] = (lamb[prev_epoch] + rho * (x[curr_epoch] + A_1.dot(zu[curr_epoch]))) / (gamma + rho)
         # update lambda
-        lamb[curr_epoch] = lamb[prev_epoch] + rho * (x[curr_epoch] + A_1 * zu[curr_epoch] - y[curr_epoch])
+        lamb[curr_epoch] = lamb[prev_epoch] + rho * (x[curr_epoch] + A_1.dot(zu[curr_epoch] - y[curr_epoch]))
         # calculate metrics
-        metrics[curr_epoch] = - x[curr_epoch].T * profits * x[curr_epoch] + mu * loss(x[curr_epoch], zu[curr_epoch])
+        metrics[curr_epoch] = - x[curr_epoch].T.dot(profits.dot(x[curr_epoch])) + mu * loss(x[curr_epoch], zu[curr_epoch])
     pass
 
 
