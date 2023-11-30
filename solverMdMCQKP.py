@@ -42,6 +42,20 @@ def validatorMdMCQ(profits: np.ndarray,
     return N, M, K
 
 
+def fromAdjacencyMatrixToEdgeDict(matrix: np.ndarray, eps: float):
+    if len(matrix.shape) != 2:
+        raise ValueError("Argument is not matrix")
+    N = matrix.shape[0]
+    if matrix.shape != (N, N):
+        raise ValueError("Matrix is not square")
+    edgeDict = {}
+    for i in range(N):
+        for j in range(N):
+            if abs(matrix[i, j]) > eps:
+                edgeDict[(i, j)] = matrix[i, j]
+    return edgeDict
+
+
 def solverMdMCQKP_2ADMM(profits: np.ndarray,
                         groups: np.ndarray,
                         weights: np.ndarray,
@@ -106,11 +120,13 @@ def solverMdMCQKP_3ADMM(profits: np.ndarray,
             Q[i, i] += diag[i]
         qubo_sampler.sample_qubo(Q)
         # TODO solve with SimulatedAnnealingSampler?
+        # Qubo is list of edges with weights
+        edges_dict = fromAdjacencyMatrixToEdgeDict(Q, eps)
         # Convex block
         q = lamb[prev_epoch] + rho * (x[curr_epoch] - y[prev_epoch])
         cones = clarabel.NonnegativeConeT(M)
         solver = clarabel.DefaultSolver(rho * np.eye(N), q, weights, capacity, cones, clarabel_settings)
-        solution = solver.solve()
+        solution = solver.solve(edges_dict)
         if not solution.status:
             raise "Solution not found for convex block"
         zu[curr_epoch] = np.hstack([solution.x, solution.z])
