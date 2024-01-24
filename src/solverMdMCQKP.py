@@ -162,10 +162,20 @@ def solverMdMCQKP_3ADMM(profits: np.ndarray,
         # update lambda
         lamb[curr_epoch] = lamb[prev_epoch] + rho * (x[curr_epoch] + A_1.dot(zu[curr_epoch]) - y[curr_epoch])
         # calculate metrics
-        metrics[curr_epoch] = - x[curr_epoch].T.dot(profits.dot(x[curr_epoch])) + mu * loss(x[curr_epoch], zu[curr_epoch])
+        metrics[curr_epoch] = - x[curr_epoch].T.dot(profits.dot(x[curr_epoch])) + mu * loss(x[curr_epoch],
+                                                                                            zu[curr_epoch])
 
     best_epoch = metrics.argmin()
     return x[best_epoch]
+
+
+def solverMdQKP_3ADMM(profits: np.ndarray,
+                      weights: np.ndarray,
+                      capacity: np.ndarray,
+                      **kwargs):
+    N = profits.shape[0]
+    groups = np.ndarray((0, N))
+    solverMdMCQKP_3ADMM(profits=profits, groups=groups, weights=weights, capacity=capacity, **kwargs)
 
 
 if __name__ == '__main__':
