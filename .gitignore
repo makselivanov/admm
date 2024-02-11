@@ -1,3 +1,5 @@
 envADDM
 .ipynb_checkpoints/
+dist
+billionnet
 *.egg-info

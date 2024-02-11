@@ -15,20 +15,20 @@ def validatorMdMCQ(profits: np.ndarray,
     K = groups.shape[0]
 
     if len(profits.shape) != 2:
-        raise ValueError("profits is not matrix (not 2d array)")
+        raise ValueError(f"profits is not matrix, shape is {profits.shape}")
     if len(groups.shape) != 2:
-        raise ValueError("groups is not matrix (not 2d array)")
+        raise ValueError(f"groups is not matrix, shape is {groups.shape}")
     if len(weights.shape) != 2:
-        raise ValueError("weights is not matrix (not 2d array)")
+        raise ValueError(f"weights is not matrix, shape is {weights.shape}")
     if len(capacity.shape) != 1:
-        raise ValueError("capacity is not vector (not 1d array)")
+        raise ValueError(f"capacity is not vector, shape is {capacity.shape}")
 
     if profits.shape != (N, N):
-        raise ValueError("profits is not square matrix (not (N, N) matrix)")
+        raise ValueError(f"profits is not square matrix, shape is {profits.shape}")
     if groups.shape != (K, N):
-        raise ValueError("groups is not (K, N) matrix")
+        raise ValueError(f"groups is not (K, N) matrix, shape is {groups.shape}, K = {K}, N = {N}")
     if weights.shape != (M, N):
-        raise ValueError("weights is not (M, N) matrix")
+        raise ValueError(f"weights is not (M, N) matrix, shape is {weights.shape}, M = {M}, N = {N}")
 
     def isSymMatrix(matrix):
         return np.allclose(matrix, matrix.T, rtol=rtol, atol=atol)
@@ -176,6 +176,14 @@ def solverMdQKP_3ADMM(profits: np.ndarray,
     N = profits.shape[0]
     groups = np.ndarray((0, N))
     solverMdMCQKP_3ADMM(profits=profits, groups=groups, weights=weights, capacity=capacity, **kwargs)
+
+
+def solverQKP_3ADMM(profits: np.ndarray,
+                      weights: np.ndarray,
+                      capacity: np.ndarray,
+                      **kwargs):
+    weights = weights.reshape((1, -1))
+    solverMdQKP_3ADMM(profits=profits, weights=weights, capacity=capacity, **kwargs)
 
 
 if __name__ == '__main__':

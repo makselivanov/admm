@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 [project]
 dynamic = ["dependencies"]
 name = "solver_knapsack_makselivanov"
-version = "0.0.1"
+version = "0.0.3"
 authors = [
     { name="Makar Selivanov", email="makar.selivanov@gmail.com" }
 ]
