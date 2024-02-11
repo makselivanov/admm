@@ -16,6 +16,6 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 [project.urls]
-Homepage = "https://github.com/makselivanov/admm"
+Homepage = "https://github.com/makselivanov/admm/solver"
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
