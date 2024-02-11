@@ -3,3 +3,4 @@ envADDM
 dist
 billionnet
 *.egg-info
+.idea
