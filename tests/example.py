@@ -1,8 +1,8 @@
 import os
 import os.path
 
-from src import solver_knapsack_makselivanov
-
+from solver.src import solver_knapsack_makselivanov
+from loader.src import qmdmckp
 
 def main(dataset):
     ALGORITHMS = {
@@ -13,11 +13,11 @@ def main(dataset):
     for problem in problems:
         print(f"Working on problem: {problem}")
         problem_path = os.path.join(dataset, problem)
-        # qmdmcpy
-        # qmkp = qmkpy.QMKProblem.load(problem_path, strategy='txt')
+        # qmdmcpkp
+        qmdmckp_emulator = qmdmckp.load(problem_path)
         for _name, _algorithm in ALGORITHMS.items():
-            qmkp.algorithm = _algorithm
-            _assignments, _profit = qmkp.solve()
+            qmdmckp.algorithm = _algorithm
+            _assignments, _profit = qmdmckp_emulator.solve()
             results[_name][problem] = _profit
     print(results)
 
