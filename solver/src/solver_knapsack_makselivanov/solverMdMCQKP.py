@@ -115,7 +115,6 @@ def defaultLoss(x: np.ndarray, zu: np.ndarray) -> np.float64:
     return ((x + A_1.dot(zu)) ** 2).sum()
 
 
-# TODO maybe profits, groups, weights can be sparse.csc_matrix()
 def solverMdMCQKP_3ADMM(profits: np.ndarray,
                         groups: np.ndarray,
                         weights: np.ndarray,
@@ -142,7 +141,6 @@ def solverMdMCQKP_3ADMM(profits: np.ndarray,
     for i in range(N):
         A_1[i, i] = -1
 
-    # TODO validate constant and initial values
     validateConstants(epochs=epochs, rho=rho, alpha=alpha, beta=beta, gamma=gamma, mu=mu, eps=eps)
     if x_0 is None:
         x_0 = np.random.rand(N)
@@ -160,7 +158,6 @@ def solverMdMCQKP_3ADMM(profits: np.ndarray,
     lamb = np.tile(lambda_0, (epochs, 1))
     metrics = np.zeros(epochs)
     metrics[0] = - x[0].T.dot(profits.dot(x[0])) + mu * loss(x[0], zu[0])
-    # TODO calculate metrics for zero
     for curr_epoch in range(1, epochs):
         prev_epoch = curr_epoch - 1
         # Qubo block
