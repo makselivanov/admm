@@ -27,31 +27,28 @@ def load(problem_path: str, eps: float = 1e-6, **kwargs):
         n = int(input_file.readline())
         m = int(input_file.readline())
         k = int(input_file.readline())
-        profits = sparse.csc_matrix((n, n))
-        weights = sparse.csc_matrix((m, n))
-        groups = sparse.csc_matrix((k, n), dtype=np.int8)
+        profits = np.zeros((n, n))
+        weights = np.zeros((m, n))
+        groups = np.zeros((k, n), dtype=np.int8)
         linear_profit_line = list(map(float, input_file.readline().split()))
         for index, elem in enumerate(linear_profit_line):
-            if abs(elem) > eps:
-                profits[index, index] = elem
+            profits[index, index] = elem
         for i in range(n):
             quad_profit_line = list(map(float, input_file.readline().split()))
             for j, elem in enumerate(quad_profit_line):
-                if abs(elem) > eps:
-                    profits[i, j] = profits[j, i] = elem
+                profits[i, j] = profits[j, i] = elem
 
-        capacities = list(map(float, input_file.readline().split()))
+        capacities = np.array(list(map(float, input_file.readline().split())))
         for i in range(m):
             weight_line = list(map(float, input_file.readline().split()))
             for j, elem in enumerate(weight_line):
-                if abs(elem) > eps:
-                    weights[i, j] = elem
+                weights[i, j] = elem
         for i in range(k):
             group_line = list(map(bool, input_file.readline().split()))
             for j, elem in enumerate(group_line):
-                if elem:
-                    groups[i, j] = elem
+                groups[i, j] = elem
         return QMdMcKnapsack(name,
+                             profits,
                              groups,
                              weights,
                              capacities,
