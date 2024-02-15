@@ -6,7 +6,7 @@ from loader.src import qmdmckp
 
 def main(dataset):
     ALGORITHMS = {
-        "Admm with 3 block": solver_knapsack_makselivanov.solverQKP_3ADMM
+        "Admm with 3 block": solver_knapsack_makselivanov.solverMdMCQKP_3ADMM
     }
     results = {k: {} for k in ALGORITHMS}
     problems = os.listdir(dataset)
@@ -16,7 +16,7 @@ def main(dataset):
         # qmdmcpkp
         qmdmckp_emulator = qmdmckp.load(problem_path)
         for _name, _algorithm in ALGORITHMS.items():
-            qmdmckp.algorithm = _algorithm
+            qmdmckp_emulator.algorithm = _algorithm
             _assignments, _profit = qmdmckp_emulator.solve()
             results[_name][problem] = _profit
     print(results)
