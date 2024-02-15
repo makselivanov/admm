@@ -8,7 +8,8 @@ def main(dataset):
     ALGORITHMS = {
         "Admm with 3 block": solver_knapsack_makselivanov.solverMdMCQKP_3ADMM
     }
-    results = {k: {} for k in ALGORITHMS}
+    profits = {k: {} for k in ALGORITHMS}
+    assignments = {k: {} for k in ALGORITHMS}
     problems = os.listdir(dataset)
     for problem in problems:
         print(f"Working on problem: {problem}")
@@ -18,8 +19,12 @@ def main(dataset):
         for _name, _algorithm in ALGORITHMS.items():
             qmdmckp_emulator.algorithm = _algorithm
             _assignments, _profit = qmdmckp_emulator.solve()
-            results[_name][problem] = _profit
-    print(results)
+            profits[_name][problem] = _profit
+            assignments[_name][problem] = _assignments
+    print(profits)
+    root_dataset = os.path.split(os.path.split(dataset)[0])[0]
+    result_set = os.path.join(root_dataset, "results")
+    qmdmckp.save(result_set, assignments)
 
 
 if __name__ == "__main__":

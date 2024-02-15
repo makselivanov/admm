@@ -1,3 +1,5 @@
+import os.path
+
 import numpy as np
 from scipy import sparse
 
@@ -53,3 +55,12 @@ def load(problem_path: str, eps: float = 1e-6, **kwargs):
                              weights,
                              capacities,
                              **kwargs)
+
+
+def save(result_path: str, assignments: dict):
+    for algorithm, assign_by_algorithm in assignments.items():
+        path = os.path.join(result_path, algorithm)
+        with open(path, "w") as result_file:
+            for problem_name, assign in assign_by_algorithm.items():
+                buffer = " ".join(list(map(str, assign)))
+                result_file.write(f"{problem_name} {buffer}\n")
