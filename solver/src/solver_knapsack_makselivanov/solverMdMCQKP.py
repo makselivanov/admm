@@ -1,15 +1,16 @@
 import clarabel
 import numpy as np
+import scipy.linalg
 from dwave.samplers import SimulatedAnnealingSampler
 from scipy import sparse
 
 
 # Валидирует переданные данные, возвращает (N, M, K) из описания рюкзака
-def validatorMdMCQ(profits: np.ndarray,
-                   groups: np.ndarray,
-                   weights: np.ndarray,
-                   capacity: np.ndarray,
-                   rtol=1e-05, atol=1e-08):
+def validateMdMCQ(profits: np.ndarray,
+                  groups: np.ndarray,
+                  weights: np.ndarray,
+                  capacity: np.ndarray,
+                  rtol=1e-05, atol=1e-08):
     N = profits.shape[0]
     M = capacity.shape[0]
     K = groups.shape[0]
@@ -30,15 +31,12 @@ def validatorMdMCQ(profits: np.ndarray,
     if weights.shape != (M, N):
         raise ValueError(f"weights is not (M, N) matrix, shape is {weights.shape}, M = {M}, N = {N}")
 
-    def isSymMatrix(matrix):
-        return np.allclose(matrix, matrix.T, rtol=rtol, atol=atol)
-
-    def isBinaryMatrix(matrix):
+    def is_binary_matrix(matrix):
         return np.array_equal(matrix, matrix.astype(bool))
 
-    if not isSymMatrix(profits):
+    if not scipy.linalg.issymmetric(profits, rtol=rtol, atol=atol):
         raise ValueError("profits is not symmetric matrix")
-    if not isBinaryMatrix(groups):
+    if not is_binary_matrix(groups):
         raise ValueError("groups is not binary matrix")
     return N, M, K
 
@@ -74,7 +72,7 @@ def solverMdMCQKP_2ADMM(profits: np.ndarray,
     # settings
     clarabel_settings = clarabel.DefaultSettings()
     # validator raise ValueError if argument is not valid
-    N, M, K = validatorMdMCQ(profits, groups, weights, capacity)
+    N, M, K = validateMdMCQ(profits, groups, weights, capacity)
     # TODO validate constant and initial values
     pass
 
@@ -91,8 +89,27 @@ def quboSolver(Q: np.ndarray, eps: np.float64):
     return result
 
 
+def validateConstants(**kwargs):
+    for key, value in kwargs.items():
+        if value < 0:
+            raise ValueError(f"{key} should be not negative")
+
+
+def validateInitialValues(x_0, zu_0, y_0, lambda_0, N, M):
+    if x_0.shape != (N, ):
+        raise ValueError("Initial 'x_0' shape should be equal to amount of items")
+    if y_0.shape != (N, ):
+        raise ValueError("Initial 'y_0' shape should be equal to amount of items")
+    if lambda_0.shape != (N, ):
+        raise ValueError("Initial 'lambda_0' shape should be equal to amount of items")
+    if zu_0.shape != (N + M, ):
+        raise ValueError("Initial 'zu_0' shape should be equal to amount of items plus amount of objectives dimensions")
+
+
 def defaultLoss(x: np.ndarray, zu: np.ndarray) -> np.float64:
-    A_1 = np.zeros((N, N + M))
+    N = x.shape[0]
+    NM = zu.shape[0]
+    A_1 = np.zeros((N, NM))
     for i in range(N):
         A_1[i, i] = -1
     return ((x + A_1.dot(zu)) ** 2).sum()
@@ -108,24 +125,34 @@ def solverMdMCQKP_3ADMM(profits: np.ndarray,
                         y_0: np.ndarray = None,
                         lambda_0: np.ndarray = None,
                         epochs: np.uint64 = 20,
-                        rho: np.float64 = None,
-                        alpha: np.float64 = None,
-                        beta: np.float64 = None,
-                        gamma: np.float64 = None,
-                        mu: np.float64 = None,
-                        eps: np.float64 = None,
+                        rho: np.float64 = 1e-2,
+                        alpha: np.float64 = 1e-2,
+                        beta: np.float64 = 1e-2,
+                        gamma: np.float64 = 1e-2,
+                        mu: np.float64 = 1e-2,
+                        eps: np.float64 = 1e-6,
                         loss=defaultLoss
                         ):
     # settings
     clarabel_settings = clarabel.DefaultSettings()
     clarabel_settings.verbose = False
     # validator raise ValueError if argument is not valid
-    N, M, K = validatorMdMCQ(profits, groups, weights, capacity)
+    N, M, K = validateMdMCQ(profits, groups, weights, capacity)
     A_1 = np.zeros((N, N + M))
     for i in range(N):
         A_1[i, i] = -1
 
     # TODO validate constant and initial values
+    validateConstants(epochs=epochs, rho=rho, alpha=alpha, beta=beta, gamma=gamma, mu=mu, eps=eps)
+    if x_0 is None:
+        x_0 = np.random.rand(N)
+    if zu_0 is None:
+        zu_0 = np.random.rand(N + M)
+    if y_0 is None:
+        y_0 = np.random.rand(N)
+    if lambda_0 is None:
+        lambda_0 = np.random.rand(N)
+    validateInitialValues(x_0, zu_0, y_0, lambda_0, N, M)
     epochs += 1
     x = np.tile(x_0, (epochs, 1))
     zu = np.tile(zu_0, (epochs, 1))
@@ -166,7 +193,7 @@ def solverMdMCQKP_3ADMM(profits: np.ndarray,
                                                                                             zu[curr_epoch])
 
     best_epoch = metrics.argmin()
-    return x[best_epoch]
+    return x[best_epoch], x[best_epoch].T.dot(profits.dot(x[best_epoch]))
 
 
 def solverMdQKP_3ADMM(profits: np.ndarray,
