@@ -59,7 +59,7 @@ def load(problem_path: str, eps: float = 1e-6, **kwargs):
 
 def save(result_path: str, assignments: dict):
     for algorithm, assign_by_algorithm in assignments.items():
-        path = os.path.join(result_path, algorithm)
+        path = os.path.join(result_path, algorithm + ".txt")
         with open(path, "w") as result_file:
             for problem_name, assign in assign_by_algorithm.items():
                 buffer = " ".join(list(map(str, assign)))
