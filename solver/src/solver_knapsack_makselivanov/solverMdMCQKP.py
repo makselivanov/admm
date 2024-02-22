@@ -124,11 +124,11 @@ def solverMdMCQKP_3ADMM(profits: np.ndarray,
                         y_0: np.ndarray = None,
                         lambda_0: np.ndarray = None,
                         epochs: np.uint64 = 20,
-                        rho: np.float64 = 1e-2,
-                        alpha: np.float64 = 1e-2,
-                        beta: np.float64 = 1e-2,
-                        gamma: np.float64 = 1e-2,
-                        mu: np.float64 = 1e-2,
+                        rho: np.float64 = 10,
+                        alpha: np.float64 = 10,
+                        beta: np.float64 = 10,
+                        gamma: np.float64 = 10,
+                        mu: np.float64 = 10,
                         eps: np.float64 = 1e-6,
                         loss=defaultLoss
                         ):
@@ -143,7 +143,7 @@ def solverMdMCQKP_3ADMM(profits: np.ndarray,
 
     validateConstants(epochs=epochs, rho=rho, alpha=alpha, beta=beta, gamma=gamma, mu=mu, eps=eps)
     if x_0 is None:
-        x_0 = np.random.rand(N)
+        x_0 = np.random.random_integers(0, 1, N)
     if zu_0 is None:
         zu_0 = np.random.rand(N + M)
     if y_0 is None:

@@ -22,8 +22,14 @@ class QMdMcKnapsack:
                               self.capacity,
                               **self.additional)
 
+    def profit(self, assigment):
+        profit = assigment.T.dot(self.profits.dot(assigment))
+        if (np.vectorize(lambda value: value < 0)(self.weights.dot(assigment) - self.capacity)).any():
+            profit = 0
+        return profit
 
-def load(problem_path: str, eps: float = 1e-6, **kwargs):
+
+def load(problem_path: str, **kwargs):
     with open(problem_path) as input_file:
         name = input_file.readline()
         n = int(input_file.readline())
@@ -64,3 +70,21 @@ def save(result_path: str, assignments: dict):
             for problem_name, assign in assign_by_algorithm.items():
                 buffer = " ".join(list(map(str, assign)))
                 result_file.write(f"{problem_name} {buffer}\n")
+
+
+def metrics(problems_path, results_path, metrics_path):
+    results = os.listdir(results_path)
+    if not os.path.exists(metrics_path):
+        os.mkdir(metrics_path)
+    for result in results:
+        result_path = os.path.join(results_path, result)
+        with open(result_path) as result_file:
+            metric_path = os.path.join(metrics_path, result)
+            with open(metric_path, "w") as metric_file:
+                for line in result_file:
+                    name, *numbers = line.split()
+                    assigment = np.array(list(map(int, numbers)))
+                    problem = os.path.join(problems_path, name)
+                    knapsack = load(problem)
+                    metric = knapsack.profit(assigment)
+                    metric_file.write(f"{name} {metric}\n")

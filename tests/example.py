@@ -4,6 +4,7 @@ import os.path
 from solver.src import solver_knapsack_makselivanov
 from loader.src import qmdmckp
 
+
 def main(dataset):
     ALGORITHMS = {
         "Admm with 3 block": solver_knapsack_makselivanov.solverMdMCQKP_3ADMM
@@ -24,7 +25,9 @@ def main(dataset):
     print(profits)
     root_dataset = os.path.split(os.path.split(dataset)[0])[0]
     result_set = os.path.join(root_dataset, "results")
+    metric_set = os.path.join(root_dataset, "metrics")
     qmdmckp.save(result_set, assignments)
+    qmdmckp.metrics(dataset, result_set, metric_set)
 
 
 if __name__ == "__main__":

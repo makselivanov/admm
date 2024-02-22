@@ -1,1 +1,1 @@
-from .QMdMcKnapsack import load, save, QMdMcKnapsack
+from .QMdMcKnapsack import load, save, metrics, QMdMcKnapsack
