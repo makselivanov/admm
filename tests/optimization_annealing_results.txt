@@ -1,0 +1,5 @@
+Result
+[ 1.41515975  1.50449132  0.69862855  1.75549858 -0.38614597]
+Result in kwargs
+{'rho': 1.4151597498101443, 'alpha': 1.5044913153604602, 'beta': 0.6986285494151483, 'gamma': 1.7554985783819128, 'mu': -0.38614597460340094}
+Cause of termination: ['requested number of basinhopping iterations completed successfully']

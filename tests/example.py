@@ -8,6 +8,7 @@ from loader.src import qmdmckp
 def main(dataset):
     ALGORITHMS = {
         "Admm with 3 block": solver_knapsack_makselivanov.solverMdMCQKP_3ADMM
+        # "QPsolvers":
     }
     profits = {k: {} for k in ALGORITHMS}
     assignments = {k: {} for k in ALGORITHMS}
