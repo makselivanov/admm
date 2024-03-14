@@ -118,7 +118,7 @@ def defaultLoss(x: np.ndarray, zu: np.ndarray) -> np.float64:
 def solverMdMCQKP_3ADMM(profits: np.ndarray,
                         groups: np.ndarray,
                         weights: np.ndarray,
-                        capacity: np.ndarray,
+                        capacities: np.ndarray,
                         x_0: np.ndarray = None,  # need to validate from here
                         zu_0: np.ndarray = None,
                         y_0: np.ndarray = None,
@@ -136,7 +136,7 @@ def solverMdMCQKP_3ADMM(profits: np.ndarray,
     clarabel_settings = clarabel.DefaultSettings()
     clarabel_settings.verbose = False
     # validator raise ValueError if argument is not valid
-    N, M, K = validateMdMCQ(profits, groups, weights, capacity)
+    N, M, K = validateMdMCQ(profits, groups, weights, capacities)
     A_1 = np.zeros((N, N + M))
     for i in range(N):
         A_1[i, i] = -1
@@ -168,7 +168,7 @@ def solverMdMCQKP_3ADMM(profits: np.ndarray,
         # beta / 2 * |Wx + u - c|^T |Wx + u - c|
         # beta / 2 * (x^TW^TWx + 2(u-c)^TWx)
         qubo_matrix += beta / 2 * weights.T * weights
-        qubo_matrix += beta * np.diag((zu[prev_epoch][N:] - capacity).T.dot(weights))
+        qubo_matrix += beta * np.diag((zu[prev_epoch][N:] - capacities).T.dot(weights))
         x[curr_epoch] = quboSolver(qubo_matrix, eps)
         # Qubo is list of edges with weights
         # Convex block
@@ -176,7 +176,7 @@ def solverMdMCQKP_3ADMM(profits: np.ndarray,
         cones = [clarabel.NonnegativeConeT(M)]
         matrix = sparse.csc_matrix(rho * np.eye(N))
         weights_csc = sparse.csc_matrix(weights)
-        solver = clarabel.DefaultSolver(matrix, q, weights_csc, capacity, cones, clarabel_settings)
+        solver = clarabel.DefaultSolver(matrix, q, weights_csc, capacities, cones, clarabel_settings)
         solution = solver.solve()
         if not solution.status:
             raise "Solution not found for convex block"
@@ -199,7 +199,7 @@ def solverMdQKP_3ADMM(profits: np.ndarray,
                       **kwargs):
     N = profits.shape[0]
     groups = np.ndarray((0, N))
-    solverMdMCQKP_3ADMM(profits=profits, groups=groups, weights=weights, capacity=capacity, **kwargs)
+    solverMdMCQKP_3ADMM(profits=profits, groups=groups, weights=weights, capacities=capacity, **kwargs)
 
 
 def solverQKP_3ADMM(profits: np.ndarray,
