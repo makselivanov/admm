@@ -22,9 +22,9 @@ class QMdMcKnapsack:
                               self.capacity,
                               **self.additional)
 
-    def profit(self, assigment):
-        profit = assigment.T.dot(self.profits.dot(assigment))
-        if (np.vectorize(lambda value: value < 0)(self.weights.dot(assigment) - self.capacity)).any():
+    def profit(self, assignment):
+        profit = assignment.T.dot(self.profits.dot(assignment))
+        if (np.vectorize(lambda value: value < 0)(self.weights.dot(assignment) - self.capacity)).any():
             profit = 0
         return profit
 
