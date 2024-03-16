@@ -36,7 +36,7 @@ def wrapper(x):
 
 
 def main():
-    low = [-1e3] * VAR_SIZE
+    low = [1e-3] * VAR_SIZE
     up = [1e3] * VAR_SIZE
     initial = [1e0] * VAR_SIZE
     #bounds = optimize.Bounds(low, up, keep_feasible=[True] * VAR_SIZE)
@@ -67,3 +67,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
