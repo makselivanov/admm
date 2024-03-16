@@ -3,12 +3,13 @@ import os.path
 
 from solver.src import solver_knapsack_makselivanov
 from loader.src import qmdmckp
+import tests.solutions.with_qpsolvers as qpsolvers
 
 
 def main(dataset):
     ALGORITHMS = {
-        "Admm with 3 block": solver_knapsack_makselivanov.solverMdMCQKP_3ADMM
-        # "QPsolvers":
+        "Admm with 3 block": solver_knapsack_makselivanov.solverMdMCQKP_3ADMM,
+        "QPsolvers": qpsolvers.solve,
     }
     profits = {k: {} for k in ALGORITHMS}
     assignments = {k: {} for k in ALGORITHMS}
