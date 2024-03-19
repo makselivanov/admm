@@ -21,7 +21,8 @@ def main(dataset):
         qmdmckp_emulator = qmdmckp.load(problem_path)
         for _name, _algorithm in ALGORITHMS.items():
             qmdmckp_emulator.algorithm = _algorithm
-            _assignments, _profit = qmdmckp_emulator.solve()
+            _assignments = qmdmckp_emulator.solve()
+            _profit = qmdmckp_emulator.profit(_assignments)
             profits[_name][problem] = _profit
             assignments[_name][problem] = _assignments
     print(profits)

@@ -83,8 +83,8 @@ def metrics(problems_path, results_path, metrics_path):
             with open(metric_path, "w") as metric_file:
                 for line in result_file:
                     name, *numbers = line.split()
-                    assigment = np.array(list(map(int, numbers)))
+                    assignment = np.array(list(map(int, numbers)))
                     problem = os.path.join(problems_path, name)
                     knapsack = load(problem)
-                    metric = knapsack.profit(assigment)
+                    metric = knapsack.profit(assignment)
                     metric_file.write(f"{name} {metric}\n")

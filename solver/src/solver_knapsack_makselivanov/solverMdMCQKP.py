@@ -190,7 +190,7 @@ def solverMdMCQKP_3ADMM(profits: np.ndarray,
                                                                                             zu[curr_epoch])
 
     best_epoch = metrics.argmin()
-    return x[best_epoch], x[best_epoch].T.dot(profits.dot(x[best_epoch]))
+    return x[best_epoch]
 
 
 def solverMdQKP_3ADMM(profits: np.ndarray,
