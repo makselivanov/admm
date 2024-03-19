@@ -225,13 +225,6 @@ if __name__ == '__main__':
         "zu_0": generator.random(N + M),
         "y_0": generator.random(N),
         "lambda_0": generator.random(N),
-        "epochs": 20,
-        "rho": 1e0,
-        "alpha": 1e0,
-        "beta": 1e1,
-        "gamma": 1e0,
-        "mu": 1e0,
-        "eps": 1e-6,
     }
     solution = solverMdMCQKP_3ADMM(profits, groups, weights, capacity, **settings)
     print(solution)

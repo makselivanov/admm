@@ -9,7 +9,7 @@ import tests.solutions.with_qpsolvers as qpsolvers
 def main(dataset):
     ALGORITHMS = {
         "Admm with 3 block": solver_knapsack_makselivanov.solverMdMCQKP_3ADMM,
-        "QPsolvers": qpsolvers.solve,
+        # "QPsolvers": qpsolvers.solve,
     }
     profits = {k: {} for k in ALGORITHMS}
     assignments = {k: {} for k in ALGORITHMS}
