@@ -29,6 +29,8 @@ def solve(profits: np.ndarray | csc_matrix,
     x = qpsolvers.solve_qp(**kwargs)
     if isinstance(x, np.ndarray):
         x = np.digitize(x, [0.5])
+    if x is None:
+        x = np.zeros(N, dtype=int)
     return x
 
 
