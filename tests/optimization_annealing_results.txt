@@ -1,6 +1,6 @@
 Result
-[1.40317744 0.55525193 0.03390049 1.07871531 1.13910215]
+[1. 1. 1. 1. 1.]
 Result in kwargs
-{'rho': 1.403177439024107, 'alpha': 0.55525193250061, 'beta': 0.03390049478067943, 'gamma': 1.0787153140698877, 'mu': 1.139102154353725}
+{'rho': 1.0, 'alpha': 1.0, 'beta': 1.0, 'gamma': 1.0, 'mu': 1.0}
 Cause of termination: ['requested number of basinhopping iterations completed successfully']
-ISO Timestamp: 2024-03-17T06:27:52.983029
+ISO Timestamp: 2024-03-22T13:14:20.998679

@@ -31,8 +31,7 @@ def wrapper(x):
             metric = problem.profit(assignments)
         except ValueError:
             metric = -INF
-        # FIXME maybe use trace instead of all values
-        metrics.append(metric / problem.profits.sum())
+        metrics.append(metric / problem.profits.trace())  # Maybe sum or trace
     return -sum(metrics)
 
 
