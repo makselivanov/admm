@@ -13,6 +13,7 @@ DATASET = "datasets/qmdmckp"
 loaded_problems = []
 INF = 1e9
 
+
 def wrapper(x):
     kwargs = {
         "rho": x[0],
