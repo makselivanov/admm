@@ -24,7 +24,7 @@ class QMdMcKnapsack:
 
     def profit(self, assignment):
         profit = assignment.T.dot(self.profits.dot(assignment))
-        if (np.vectorize(lambda value: value < 0)(self.weights.dot(assignment) - self.capacity)).any():
+        if (np.vectorize(lambda value: value > 0)(self.weights.dot(assignment) - self.capacity)).any():
             profit = 0
         return profit
 
