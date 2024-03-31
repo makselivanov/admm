@@ -14,43 +14,49 @@ class AdmmSolver:
                  capacities: np.ndarray,
                  settings: Settings,
                  initvals: dict):
+        """
+        Initialize solver
+        :param profits: Real matrix NxN, indicate profit for each item and its combinations of two. Total profit is x^T P x
+        :param groups: Binary matrix KxN, from each group will be taken only one item
+        :param weights: Real matrix MxN, indicate weight for each item
+        :param capacities: Real vector M, indicate capacity for each dimension
+        :param settings: Settings object
+        :param initvals: Initial values, key can be x, y, zu, lambda
+        """
         self.settings = settings
-
-        # Real matrix NxN, indicate profit for each item and its combinations of two
-        # total profit is x^T P x
         self.profits = profits
-
-        # Binary matrix KxN, from each group will be taken only one item
         self.groups = groups
-
-        # Real matrix MxN, indicate weight for each item
         self.weights = weights
-
-        # Real vector M, indicate capacity for each dimension
         self.capacities = capacities
-
-        # Initial values, keys can be x_0, y_0, zu_0, lambda_0
         self.initvals: dict = dict()
 
         # Number of items
         self.N = profits.shape[0]
-
         # Number of dimensions
         self.M = capacities.shape[0]
-
         # Number of groups
         self.K = groups.shape[0]
 
     @abstractmethod
     def solve(self) -> np.ndarray:
+        """
+        Abstract method to solve quadratic multidimensional multi-choice knapsack problem (QMDMcKP)
+        """
         raise NotImplementedError()
 
-    def validate(self, rtol=1e-05, atol=1e-08) -> (int, int, int):
+    def validate(self, rtol=1e-05, atol=1e-08):
+        """
+        Validate all parameters for QMDMcKP
+        :param rtol: Relative error bound
+        :type rtol: float | None
+        :param atol: Absolute error bound
+        :type atol: float | None
+        :raise ValueError: If parameter is invalid
+        """
         self._validate_dimensions()
         self._validate_shape()
         self._validate_group_is_binary()
         self._validate_profits_is_symmetric(rtol, atol)
-        return self.N, self.M, self.K
 
     def _validate_shape(self):
         if self.profits.shape != (self.N, self.N):
