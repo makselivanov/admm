@@ -47,34 +47,34 @@ def fromAdjacencyMatrixToEdgeDict(matrix: np.ndarray, eps: float):
     N = matrix.shape[0]
     if matrix.shape != (N, N):
         raise ValueError("Matrix is not square")
-    edgeDict = {}
+    edge_dict = {}
     for i in range(N):
         for j in range(N):
             if abs(matrix[i, j]) > eps:
-                edgeDict[(i, j)] = matrix[i, j]
-    return edgeDict
+                edge_dict[(i, j)] = matrix[i, j]
+    return edge_dict
 
 
-def solverMdMCQKP_2ADMM(profits: np.ndarray,
-                        groups: np.ndarray,
-                        weights: np.ndarray,
-                        capacity: np.ndarray,
-                        x_0: np.ndarray = None,  # need to validate from here
-                        zu_0: np.ndarray = None,
-                        lambda_0: np.ndarray = None,
-                        epochs: np.uint64 = 20,
-                        rho: np.float64 = None,
-                        alpha: np.float64 = None,
-                        beta: np.float64 = None,
-                        mu: np.float64 = None,
-                        eps: np.float64 = None,
-                        ):
-    # settings
-    clarabel_settings = clarabel.DefaultSettings()
-    # validator raise ValueError if argument is not valid
-    N, M, K = validateMdMCQ(profits, groups, weights, capacity)
-    # TODO validate constant and initial values
-    pass
+# def solverMdMCQKP_2ADMM(profits: np.ndarray,
+#                         groups: np.ndarray,
+#                         weights: np.ndarray,
+#                         capacity: np.ndarray,
+#                         x_0: np.ndarray = None,  # need to validate from here
+#                         zu_0: np.ndarray = None,
+#                         lambda_0: np.ndarray = None,
+#                         epochs: np.uint64 = 20,
+#                         rho: np.float64 = None,
+#                         alpha: np.float64 = None,
+#                         beta: np.float64 = None,
+#                         mu: np.float64 = None,
+#                         eps: np.float64 = None,
+#                         ):
+#     # settings
+#     clarabel_settings = clarabel.DefaultSettings()
+#     # validator raise ValueError if argument is not valid
+#     N, M, K = validateMdMCQ(profits, groups, weights, capacity)
+#     # TODO validate constant and initial values
+#     pass
 
 
 def quboSolver(Q: np.ndarray, eps: np.float64):
