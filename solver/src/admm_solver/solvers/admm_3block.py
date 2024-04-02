@@ -73,6 +73,9 @@ class AdmmBlock3Solver(AdmmSolver, ABC):
     def _calculate_metric(self, epoch):
         return -self._profit(epoch) + self._loss_due_out_of_sync(epoch)
 
+    def _difference_for_xs_zus(self, x_epoch, zu_epoch):
+        return self.xs[x_epoch] + self.A_1.dot(self.zus[zu_epoch])
+
     def _initialize_solving(self):
         self._validate_everything()
         self.metrics[0] = self._calculate_metric(0)
@@ -109,7 +112,7 @@ class AdmmBlock3Solver(AdmmSolver, ABC):
         # calculate metrics
         self.metrics[self.current_epoch] = self._calculate_metric(self.current_epoch)
 
-    # FIXME
+    # TODO make it pretty
     def _from_adjacency_matrix_to_edge_dict(self, matrix: np.ndarray, eps: float):
         if len(matrix.shape) != 2:
             raise ValueError("Argument is not matrix")
@@ -123,7 +126,7 @@ class AdmmBlock3Solver(AdmmSolver, ABC):
                     edge_dict[(i, j)] = matrix[i, j]
         return edge_dict
 
-    # FIXME
+    # TODO make it pretty
     def _qubo_solver(self, Q: np.ndarray, eps: np.float64):
         qubo_sampler = SimulatedAnnealingSampler()
         edges_dict = self._from_adjacency_matrix_to_edge_dict(Q, eps)
@@ -135,6 +138,7 @@ class AdmmBlock3Solver(AdmmSolver, ABC):
             result[key] = item
         return result
 
+    # TODO make it pretty
     def _calculate_x(self, x_epoch, zu_epoch, y_epoch, lambda_epoch):
         qubo_matrix = - self.profits + self.settings.alpha / 2 * self.groups.T.dot(self.groups) + self.settings.rho / 2 * np.eye(self.N)
         diagonal = - (self.settings.alpha * self.groups.T.dot(np.ones(self.K)) + self.settings.rho * (self.A_1.dot(self.zus[zu_epoch]) + self.ys[y_epoch]) - self.lambdas[
@@ -148,6 +152,7 @@ class AdmmBlock3Solver(AdmmSolver, ABC):
         # Qubo is list of edges with weights
         return self._qubo_solver(qubo_matrix, self.settings.eps)
 
+    # TODO make it pretty
     def _calculate_zu(self, x_epoch, zu_epoch, y_epoch, lambda_epoch):
         q = self.lambdas[lambda_epoch] + self.settings.rho * (self.xs[x_epoch] - self.ys[y_epoch])
         cones = [clarabel.NonnegativeConeT(self.M)]
@@ -160,8 +165,14 @@ class AdmmBlock3Solver(AdmmSolver, ABC):
         return np.hstack([solution.x, solution.z])
 
     def _calculate_y(self, x_epoch, zu_epoch, y_epoch, lambda_epoch):
-        return (self.lambdas[lambda_epoch] + self.settings.rho * (self.xs[x_epoch] + self.A_1.dot(self.zus[zu_epoch]))) / (self.settings.gamma + self.settings.rho)
+        difference = self._difference_for_xs_zus(x_epoch, zu_epoch)
+        numerator = self.lambdas[lambda_epoch] + self.settings.rho * difference
+        denominator = self.settings.gamma + self.settings.rho
+        return numerator / denominator
 
     def _calculate_lambda(self, x_epoch, zu_epoch, y_epoch, lambda_epoch):
-        return self.lambdas[lambda_epoch] + self.settings.rho * (self.xs[x_epoch] + self.A_1.dot(self.zus[zu_epoch]) - self.ys[y_epoch])
+        difference = self._difference_for_xs_zus(x_epoch, zu_epoch) - self.ys[y_epoch]
+        previous_lambda = self.lambdas[lambda_epoch]
+        total = previous_lambda + self.settings.rho * difference
+        return total
 
