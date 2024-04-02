@@ -1,14 +1,15 @@
 import os
 import os.path
 
-from solver.src import solver_knapsack_makselivanov
+from solver.src import admm_solver
 from loader.src import qmdmckp
 import tests.solutions.with_qpsolvers as qpsolvers
+from solver.src.admm_solver import Settings
 
 
 def main(dataset):
     ALGORITHMS = {
-        "Admm with 3 block": solver_knapsack_makselivanov.solverMdMCQKP_3ADMM,
+        "Admm with 3 block": admm_solver.AdmmBlock3Solver,
         "QPsolvers": qpsolvers.solve,
     }
     profits = {k: {} for k in ALGORITHMS}
@@ -17,7 +18,7 @@ def main(dataset):
     for problem in problems:
         print(f"Working on problem: {problem}")
         problem_path = os.path.join(dataset, problem)
-        # qmdmcpkp
+        # qmdmckp
         qmdmckp_emulator = qmdmckp.load(problem_path)
         for _name, _algorithm in ALGORITHMS.items():
             qmdmckp_emulator.algorithm = _algorithm

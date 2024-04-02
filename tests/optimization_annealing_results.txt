@@ -3,4 +3,4 @@ Result
 Result in kwargs
 {'rho': 1.0, 'alpha': 1.0, 'beta': 1.0, 'gamma': 1.0, 'mu': 1.0}
 Cause of termination: ['requested number of basinhopping iterations completed successfully']
-ISO Timestamp: 2024-03-22T13:14:20.998679
+ISO Timestamp: 2024-03-22T13:37:29.238928

@@ -28,10 +28,10 @@ def wrapper(x):
         problem.algorithm = solver_knapsack_makselivanov.solverMdMCQKP_3ADMM
         try:
             assignments, profit = problem.solve()
-            metric = problem.profit(assignments)
+            metric = problem.profits(assignments)
         except ValueError:
             metric = -INF
-        metrics.append(metric / problem.profits.trace())  # Maybe sum or trace
+        metrics.append(metric / problem.profits.trace())  # Maybe sum or trace  
     return -sum(metrics)
 
 
@@ -67,5 +67,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-

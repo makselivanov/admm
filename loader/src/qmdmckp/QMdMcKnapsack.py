@@ -16,11 +16,14 @@ class QMdMcKnapsack:
 
     # Return tuple of assignments and profits
     def solve(self) -> (np.ndarray, float):
-        return self.algorithm(self.profits,
-                              self.groups,
-                              self.weights,
-                              self.capacity,
-                              **self.additional)
+        result = self.algorithm(self.profits,
+                                self.groups,
+                                self.weights,
+                                self.capacity,
+                                **self.additional)
+        if not isinstance(result, np.ndarray):
+            result = result.solve()
+        return result
 
     def profit(self, assignment):
         profit = assignment.T.dot(self.profits.dot(assignment))

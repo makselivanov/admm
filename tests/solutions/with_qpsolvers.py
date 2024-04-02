@@ -51,6 +51,6 @@ if __name__ == '__main__':
     qmdmckp_emulator.algorithm = solve
     qmdmckp_emulator.additional["verbose"] = True
     _assignments = qmdmckp_emulator.solve()
-    _profit = qmdmckp_emulator.profit(_assignments)
+    _profit = qmdmckp_emulator.profits(_assignments)
     print(f"QP profit: {_profit=}")
 

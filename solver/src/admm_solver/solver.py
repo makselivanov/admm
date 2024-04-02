@@ -4,6 +4,8 @@ import numpy as np
 import scipy
 
 from .settings import Settings
+from .loss import Loss
+from .losses.default_loss import DefaultLoss
 
 
 class AdmmSolver:
@@ -12,8 +14,9 @@ class AdmmSolver:
                  groups: np.ndarray,
                  weights: np.ndarray,
                  capacities: np.ndarray,
-                 settings: Settings,
-                 initvals: dict):
+                 settings: Settings = Settings(),
+                 initvals: dict | None = None,
+                 loss: Loss = DefaultLoss()):
         """
         Initialize solver
         :param profits: Real matrix NxN, indicate profit for each item and its combinations of two. Total profit is x^T P x
@@ -22,13 +25,17 @@ class AdmmSolver:
         :param capacities: Real vector M, indicate capacity for each dimension
         :param settings: Settings object
         :param initvals: Initial values, key can be x, y, zu, lambda
+        :param loss: Loss object
         """
+        if initvals is None:
+            initvals = dict()
         self.settings = settings
         self.profits = profits
         self.groups = groups
         self.weights = weights
         self.capacities = capacities
-        self.initvals: dict = dict()
+        self.initvals: dict = initvals
+        self.loss = loss
 
         # Number of items
         self.N = profits.shape[0]
@@ -40,13 +47,13 @@ class AdmmSolver:
     @abstractmethod
     def solve(self) -> np.ndarray:
         """
-        Abstract method to solve quadratic multidimensional multi-choice knapsack problem (QMDMcKP)
+        Abstract method to solve quadratic multidimensional multi-choice knapsack problem (QMdMCKP)
         """
         raise NotImplementedError()
 
     def validate(self, rtol=1e-05, atol=1e-08):
         """
-        Validate all parameters for QMDMcKP
+        Validate all parameters for QMdMCKP
         :param rtol: Relative error bound
         :type rtol: float | None
         :param atol: Absolute error bound

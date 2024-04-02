@@ -11,17 +11,7 @@ class Settings:
     mu: np.float64 = 1.139102154353725
     eps: np.float64 = 1e-6
 
-    def __init__(self):
-        pass
-
     def validate(self):
-        kwargs = dict(rho=self.rho,
-                      alpha=self.alpha,
-                      beta=self.beta,
-                      gamma=self.gamma,
-                      mu=self.mu,
-                      eps=self.eps,
-                      max_iter=self.max_iter)
-        for key, value in kwargs.items():
+        for key, value in self.__dict__:
             if value < 0:
                 raise ValueError(f"{key} should be not negative")
