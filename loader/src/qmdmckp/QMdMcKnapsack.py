@@ -31,6 +31,11 @@ class QMdMcKnapsack:
             profit = 0
         return profit
 
+    def loss(self, assignment):
+        inequalities = self.weights.dot(assignment) - self.capacity
+        equalities = self.groups.dot(assignment) - np.ones(self.groups.shape[0])
+        return (np.vectorize(lambda value: value > 0)(inequalities) ** 2).sum() + (equalities ** 2).sum()
+
 
 def load(problem_path: str, **kwargs):
     with open(problem_path) as input_file:
@@ -44,11 +49,11 @@ def load(problem_path: str, **kwargs):
         linear_profit_line = list(map(float, input_file.readline().split()))
         for index, elem in enumerate(linear_profit_line):
             profits[index, index] = elem
-        for i in range(n):
+        for i in range(n - 1):
             quad_profit_line = list(map(float, input_file.readline().split()))
             for j, elem in enumerate(quad_profit_line):
-                profits[i, j] = profits[j, i] = elem
-
+                profits[i, i + 1 + j] = profits[i + 1 + j, i] = elem
+        input_file.readline()  # read black line
         capacities = np.array(list(map(float, input_file.readline().split())))
         for i in range(m):
             weight_line = list(map(float, input_file.readline().split()))
