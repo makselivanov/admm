@@ -8,7 +8,7 @@ class Settings:
     alpha: np.float64 = 0.55525193250061
     beta: np.float64 = 1e5
     gamma: np.float64 = 1.0787153140698877
-    mu: np.float64 = 1.139102154353725
+    mu: np.float64 = 1e5
     eps: np.float64 = 1e-6
 
     def validate(self):

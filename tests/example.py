@@ -3,7 +3,8 @@ import os.path
 
 from solver.src import admm_solver
 from loader.src import qmdmckp
-import tests.solutions.with_qpsolvers as qpsolvers
+import solutions.with_qpsolvers as qpsolvers
+import solutions.greedy as greedy
 from solver.src.admm_solver import Settings
 
 
@@ -11,6 +12,7 @@ def main(dataset):
     ALGORITHMS = {
         "Admm with 3 block": admm_solver.AdmmBlock3Solver,
         "QPsolvers": qpsolvers.solve,
+        "Greedy": greedy.solve,
     }
     profits = {k: {} for k in ALGORITHMS}
     assignments = {k: {} for k in ALGORITHMS}
@@ -20,6 +22,8 @@ def main(dataset):
         problem_path = os.path.join(dataset, problem)
         # qmdmckp
         qmdmckp_emulator = qmdmckp.load(problem_path)
+
+        qmdmckp_emulator.additional["loss"] = lambda x, zu: qmdmckp_emulator.loss(x)
         for _name, _algorithm in ALGORITHMS.items():
             qmdmckp_emulator.algorithm = _algorithm
             _assignments = qmdmckp_emulator.solve()

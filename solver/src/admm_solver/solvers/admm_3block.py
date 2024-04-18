@@ -113,7 +113,7 @@ class AdmmBlock3Solver(AdmmSolver, ABC):
         self.metrics[self.current_epoch] = self._calculate_metric(self.current_epoch)
 
     # TODO make it pretty
-    def _from_adjacency_matrix_to_edge_dict(self, matrix: np.ndarray, eps: float):
+    def _from_adjacency_matrix_to_edge_dict(self, matrix: np.ndarray, eps):
         if len(matrix.shape) != 2:
             raise ValueError("Argument is not matrix")
         N = matrix.shape[0]
@@ -123,7 +123,7 @@ class AdmmBlock3Solver(AdmmSolver, ABC):
         for i in range(N):
             for j in range(N):
                 if abs(matrix[i, j]) > eps:
-                    edge_dict[(i, j)] = matrix[i, j]
+                    edge_dict[(i, j)] = matrix.item((i, j))
         return edge_dict
 
     # TODO make it pretty

@@ -3,7 +3,7 @@ import numpy as np
 from ..loss import Loss
 
 
-class DefaultLoss(Loss):
+class DefaultLoss(Loss):  # Можно только учитывать не выполняющиеся ограничения на неравенства + равенства
     def __call__(self, x: np.ndarray, zu: np.ndarray):
         N = x.shape[0]
         NM = zu.shape[0]
