@@ -88,6 +88,8 @@ class AdmmBlock3Solver(AdmmSolver, ABC):
         self.metrics[0] = self._calculate_metric(0)
 
     def _save_metrics_data(self):
+        if self.data_dir_path is None or self.problem_name is None:
+            return
         file_path = os.path.join(self.data_dir_path, self.problem_name)
         dump_data = {
             "x": self.xs.tolist(),
