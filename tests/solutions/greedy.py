@@ -14,7 +14,9 @@ def solve(profits: np.ndarray | csc_matrix,
           groups: np.ndarray | csc_matrix | None = None,
           weights: np.ndarray | csc_matrix | None = None,
           capacities: np.ndarray | None = None,
-          loss: None = None):
+          loss: None = None,
+          data_dir_path: str | None = None,
+          problem_name: str | None = None):
     n = profits.shape[0]
     _assignments = np.zeros(n, dtype=np.int8)
     for i in range(n):

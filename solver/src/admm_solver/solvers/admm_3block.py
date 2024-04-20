@@ -1,3 +1,5 @@
+import json
+import os
 from abc import ABC
 
 import clarabel
@@ -19,7 +21,9 @@ class AdmmBlock3Solver(AdmmSolver, ABC):
                  capacities: np.ndarray,
                  settings: Settings = Settings(),
                  initvals: dict | None = None,
-                 loss: Loss = DefaultLoss()):
+                 loss: Loss = DefaultLoss(),
+                 data_dir_path: str | None = None,
+                 problem_name: str | None = None):
         super().__init__(profits, groups, weights, capacities, settings, initvals, loss)
         self.clarabel_settings = clarabel.DefaultSettings()
         self.clarabel_settings.verbose = False
@@ -47,6 +51,9 @@ class AdmmBlock3Solver(AdmmSolver, ABC):
         self.A_1 = np.zeros((self.N, self.N + self.M))
         for i in range(self.N):
             self.A_1[i, i] = -1
+
+        self.data_dir_path = data_dir_path
+        self.problem_name = problem_name
 
     def _validate_everything(self):
         self.validate()
@@ -80,6 +87,18 @@ class AdmmBlock3Solver(AdmmSolver, ABC):
         self._validate_everything()
         self.metrics[0] = self._calculate_metric(0)
 
+    def _save_metrics_data(self):
+        file_path = os.path.join(self.data_dir_path, self.problem_name)
+        dump_data = {
+            "x": self.xs.tolist(),
+            "y": self.ys.tolist(),
+            "lambda": self.lambdas.tolist(),
+            "zu": self.zus.tolist(),
+            "metrics": self.metrics.tolist(),
+        }
+        with open(file_path, "w", encoding='utf-8') as result_file:
+            result_file.write(json.dumps(dump_data))
+
     def solve(self) -> np.ndarray:
         """
         Solve QMdMCKP using admm with 3 block
@@ -90,6 +109,9 @@ class AdmmBlock3Solver(AdmmSolver, ABC):
             self._solving_step()
 
         best_epoch = self.metrics.argmin()
+
+        self._save_metrics_data()
+
         return self.xs[best_epoch]
 
     def _solving_step(self):

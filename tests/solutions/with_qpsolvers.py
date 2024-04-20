@@ -12,7 +12,10 @@ def solve(profits: np.ndarray | csc_matrix,
           groups: np.ndarray | csc_matrix | None = None,
           weights: np.ndarray | csc_matrix | None = None,
           capacities: np.ndarray | None = None,
-          solver="clarabel", loss: None = None, **kwargs):
+          solver="clarabel", loss: None = None,
+          data_dir_path: str | None = None,
+          problem_name: str | None = None,
+          **kwargs):
     N = profits.shape[0]
     if isinstance(profits, np.ndarray):
         profits = csc_matrix(profits)

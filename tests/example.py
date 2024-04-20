@@ -24,6 +24,8 @@ def main(dataset):
         qmdmckp_emulator = qmdmckp.load(problem_path)
 
         qmdmckp_emulator.additional["loss"] = lambda x, zu: qmdmckp_emulator.loss(x)
+        qmdmckp_emulator.additional["data_dir_path"] = "data"
+        qmdmckp_emulator.additional["problem_name"] = problem
         for _name, _algorithm in ALGORITHMS.items():
             qmdmckp_emulator.algorithm = _algorithm
             _assignments = qmdmckp_emulator.solve()
