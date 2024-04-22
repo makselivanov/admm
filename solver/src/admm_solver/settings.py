@@ -3,7 +3,7 @@ import numpy as np
 
 class Settings:
     verbose: bool = False
-    max_iter: np.uint64 = 20
+    max_iter: np.uint64 = 100
     rho: np.float64 = 1.403177439024107
     alpha: np.float64 = 0.55525193250061
     beta: np.float64 = 1e5

@@ -35,7 +35,7 @@ def main(dataset):
     print(profits)
     root_dataset = os.path.split(os.path.split(dataset)[0])[0]
     result_set = os.path.join(root_dataset, "results")
-    metric_set = os.path.join(root_dataset, "metrics")
+    metric_set = os.path.join(root_dataset, "profits")
     qmdmckp.save(result_set, assignments)
     qmdmckp.metrics(dataset, result_set, metric_set)
 

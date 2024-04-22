@@ -96,7 +96,7 @@ class AdmmBlock3Solver(AdmmSolver, ABC):
             "y": self.ys.tolist(),
             "lambda": self.lambdas.tolist(),
             "zu": self.zus.tolist(),
-            "metrics": self.metrics.tolist(),
+            "profits": self.metrics.tolist(),
         }
         with open(file_path, "w", encoding='utf-8') as result_file:
             result_file.write(json.dumps(dump_data))
@@ -133,7 +133,7 @@ class AdmmBlock3Solver(AdmmSolver, ABC):
         # update lambda
         self.lambdas[self.current_epoch] = self._calculate_lambda(x_epoch, zu_epoch, y_epoch, lambda_epoch)
         lambda_epoch += 1
-        # calculate metrics
+        # calculate profits
         self.metrics[self.current_epoch] = self._calculate_metric(self.current_epoch)
 
     # TODO make it pretty
