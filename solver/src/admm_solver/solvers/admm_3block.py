@@ -116,6 +116,44 @@ class AdmmBlock3Solver(AdmmSolver, ABC):
 
         return self.xs[best_epoch]
 
+    def update_settings(self, epoch) -> Settings:
+        buffer = dict()
+        rho = self.settings.rho
+        alpha = self.settings.alpha
+        beta = self.settings.beta
+        gamma = self.settings.gamma
+        mu = self.settings.mu
+
+        increase = 2
+        decrease = 2
+        threshold = 10
+
+        buffer["rho"] = rho
+        buffer["alpha"] = alpha
+        buffer["beta"] = beta
+        buffer["gamma"] = gamma
+        buffer["mu"] = mu
+
+        for key, c in buffer.items():
+            s = c * self.A_1 @ (self.zus[epoch] - self.zus[epoch - 1])
+            norm_of_s = np.linalg.norm(s)
+            r = self._difference_for_xs_zus(epoch, epoch)
+            norm_of_r = np.linalg.norm(r)
+            if norm_of_r > threshold * norm_of_s:
+                buffer[key] *= increase
+            elif norm_of_s > threshold * norm_of_r:
+                buffer[key] /= decrease
+
+        new_settings = Settings()
+
+        for key, value in new_settings.__dict__:
+            if buffer.__contains__(key):
+                new_settings.__setattr__(key, buffer[key])
+            else:
+                new_settings.__setattr__(key, new_settings.__getattribute__(key))
+
+        return new_settings
+
     def _solving_step(self):
         # Qubo block
         x_epoch = self.current_epoch - 1
@@ -135,6 +173,8 @@ class AdmmBlock3Solver(AdmmSolver, ABC):
         lambda_epoch += 1
         # calculate profits
         self.metrics[self.current_epoch] = self._calculate_metric(self.current_epoch)
+        # update settings
+        self.settings = self.update_settings(self.current_epoch)
 
     # TODO make it pretty
     def _from_adjacency_matrix_to_edge_dict(self, matrix: np.ndarray, eps):
