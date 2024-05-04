@@ -17,8 +17,8 @@ def main(dataset):
     profits = {k: {} for k in ALGORITHMS}
     assignments = {k: {} for k in ALGORITHMS}
     problems = os.listdir(dataset)
-    for problem in problems:
-        print(f"Working on problem: {problem}")
+    for index, problem in enumerate(problems):
+        print(f"Working on problem {index+1}/{len(problems)}: {problem}")
         problem_path = os.path.join(dataset, problem)
         # qmdmckp
         qmdmckp_emulator = qmdmckp.load(problem_path)
