@@ -124,9 +124,9 @@ class AdmmBlock3Solver(AdmmSolver, ABC):
         gamma = self.settings.gamma
         mu = self.settings.mu
 
-        increase = 2
-        decrease = 2
-        threshold = 10
+        tau_increase = 1.5
+        tau_decrease = 1.5
+        mu_threshold = 5
 
         buffer["rho"] = rho
         buffer["alpha"] = alpha
@@ -139,10 +139,10 @@ class AdmmBlock3Solver(AdmmSolver, ABC):
             norm_of_s = np.linalg.norm(s)
             r = self._difference_for_xs_zus(epoch, epoch)
             norm_of_r = np.linalg.norm(r)
-            if norm_of_r > threshold * norm_of_s:
-                buffer[key] *= increase
-            elif norm_of_s > threshold * norm_of_r:
-                buffer[key] /= decrease
+            if norm_of_r > mu_threshold * norm_of_s:
+                buffer[key] *= tau_increase
+            elif norm_of_s > mu_threshold * norm_of_r:
+                buffer[key] /= tau_decrease
 
         new_settings = Settings()
 
