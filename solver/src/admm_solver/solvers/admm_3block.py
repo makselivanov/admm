@@ -128,7 +128,6 @@ class AdmmBlock3Solver(AdmmSolver, ABC):
         tau_decrease = 2
         mu_threshold = 5
 
-        buffer["rho"] = rho
         buffer["alpha"] = alpha
         buffer["beta"] = beta
         buffer["gamma"] = gamma
@@ -143,6 +142,8 @@ class AdmmBlock3Solver(AdmmSolver, ABC):
                 buffer[key] *= tau_increase
             elif norm_of_s > mu_threshold * norm_of_r:
                 buffer[key] /= tau_decrease
+
+        buffer["rho"] = 1.1 * rho if rho < 1e7 else rho
 
         new_settings = Settings()
 
