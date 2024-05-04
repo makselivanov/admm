@@ -96,7 +96,7 @@ class AdmmBlock3Solver(AdmmSolver, ABC):
             "y": self.ys.tolist(),
             "lambda": self.lambdas.tolist(),
             "zu": self.zus.tolist(),
-            "profits": self.metrics.tolist(),
+            "metrics": self.metrics.tolist(),
         }
         with open(file_path, "w", encoding='utf-8') as result_file:
             result_file.write(json.dumps(dump_data))
