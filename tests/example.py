@@ -1,5 +1,6 @@
 import os
 import os.path
+from datetime import datetime
 
 from solver.src import admm_solver
 from loader.src import qmdmckp
@@ -17,6 +18,7 @@ def main(dataset):
     profits = {k: {} for k in ALGORITHMS}
     assignments = {k: {} for k in ALGORITHMS}
     problems = os.listdir(dataset)
+    start = datetime.now()
     for index, problem in enumerate(problems):
         print(f"Working on problem {index+1}/{len(problems)}: {problem}")
         problem_path = os.path.join(dataset, problem)
@@ -32,7 +34,10 @@ def main(dataset):
             _profit = qmdmckp_emulator.profit(_assignments)
             profits[_name][problem] = _profit
             assignments[_name][problem] = _assignments
+    finish = datetime.now()
+    time_duration = finish - start
     print(profits)
+    print(f"Duration of calculation: {time_duration}")
     root_dataset = os.path.split(os.path.split(dataset)[0])[0]
     result_set = os.path.join(root_dataset, "results")
     metric_set = os.path.join(root_dataset, "profits")
