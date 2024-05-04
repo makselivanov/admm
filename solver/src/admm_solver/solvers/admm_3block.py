@@ -124,8 +124,8 @@ class AdmmBlock3Solver(AdmmSolver, ABC):
         gamma = self.settings.gamma
         mu = self.settings.mu
 
-        tau_increase = 1.5
-        tau_decrease = 1.5
+        tau_increase = 2
+        tau_decrease = 2
         mu_threshold = 5
 
         buffer["rho"] = rho

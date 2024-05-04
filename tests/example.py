@@ -12,7 +12,7 @@ from solver.src.admm_solver import Settings
 def main(dataset):
     ALGORITHMS = {
         "Admm with 3 block": admm_solver.AdmmBlock3Solver,
-        "QPsolvers": qpsolvers.solve,
+        # "QPsolvers": qpsolvers.solve,
         "Greedy": greedy.solve,
     }
     profits = {k: {} for k in ALGORITHMS}
