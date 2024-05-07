@@ -192,9 +192,9 @@ class AdmmBlock3Solver(AdmmSolver, ABC):
         return edge_dict
 
     # TODO make it pretty
-    def _qubo_solver(self, Q: np.ndarray, eps: np.float64):
+    def _qubo_solver(self, qubo_matrix: np.ndarray, eps: np.float64):
         qubo_sampler = SimulatedAnnealingSampler()
-        edges_dict = self._from_adjacency_matrix_to_edge_dict(Q, eps)
+        edges_dict = self._from_adjacency_matrix_to_edge_dict(qubo_matrix, eps)
         sampled = qubo_sampler.sample_qubo(edges_dict)
         solution = sampled.first.sample
         size = max(solution.keys()) + 1

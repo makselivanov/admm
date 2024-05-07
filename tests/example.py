@@ -28,16 +28,17 @@ def main(dataset):
         qmdmckp_emulator.additional["loss"] = lambda x, zu: qmdmckp_emulator.loss(x)
         qmdmckp_emulator.additional["data_dir_path"] = "data"
         qmdmckp_emulator.additional["problem_name"] = problem
-        for _name, _algorithm in ALGORITHMS.items():
+        for _algorithm_name, _algorithm in ALGORITHMS.items():
             qmdmckp_emulator.algorithm = _algorithm
             _assignments = qmdmckp_emulator.solve()
             _profit = qmdmckp_emulator.profit(_assignments)
-            profits[_name][problem] = _profit
-            assignments[_name][problem] = _assignments
+            profits[_algorithm_name][problem] = _profit
+            assignments[_algorithm_name][problem] = _assignments
     finish = datetime.now()
     time_duration = finish - start
     print(profits)
     print(f"Duration of calculation: {time_duration}")
+    print(f"Timestamp: {finish}")
     root_dataset = os.path.split(os.path.split(dataset)[0])[0]
     result_set = os.path.join(root_dataset, "results")
     metric_set = os.path.join(root_dataset, "profits")
